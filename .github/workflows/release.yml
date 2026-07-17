@@ -25,14 +25,14 @@ jobs:
       # 태그 버전과 package-exe.ps1의 $AppVersion이 어긋난 채 릴리즈되는 것을 방지한다.
       - name: 태그-스크립트 버전 일치 확인
         if: github.ref_type == 'tag'
-        shell: powershell
+        shell: pwsh
         run: |
           $v = (Select-String -Path package-exe.ps1 -Pattern '\$AppVersion = "([^"]+)"').Matches[0].Groups[1].Value
           $tag = "${{ github.ref_name }}".TrimStart("v")
           if ($v -ne $tag) { throw "버전 불일치: 태그=$tag, package-exe.ps1=$v — 스크립트 버전을 맞춘 뒤 태그를 다시 만드세요." }
 
       - name: 포터블 EXE 빌드 (컴파일·테스트·jpackage·IExpress)
-        shell: powershell
+        shell: pwsh
         run: .\package-exe.ps1
 
       - uses: actions/upload-artifact@v4

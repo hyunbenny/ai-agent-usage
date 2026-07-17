@@ -1,4 +1,4 @@
-function Get-Java17Toolchain {
+﻿function Get-Java17Toolchain {
     [CmdletBinding()]
     param(
         [switch]$RequirePackaging
