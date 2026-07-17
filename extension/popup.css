@@ -1,0 +1,61 @@
+:root {
+  color-scheme: dark;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  width: 280px;
+  margin: 0;
+  padding: 16px;
+  color: #eef1f7;
+  background: #11141b;
+}
+
+h1 {
+  margin: 0 0 12px;
+  color: #d5815d;
+  font-size: 16px;
+}
+
+section {
+  margin: 12px 0;
+  padding: 10px;
+  border-radius: 8px;
+  background: #1d222d;
+}
+
+section p {
+  margin: 5px 0 0;
+}
+
+p {
+  margin: 8px 0;
+  line-height: 1.4;
+}
+
+.muted,
+small {
+  color: #97a0b2;
+}
+
+button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 9px;
+  border: 0;
+  border-radius: 8px;
+  color: #11141b;
+  background: #d5815d;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+button.secondary {
+  color: #eef1f7;
+  background: #2f3542;
+}
+
+small {
+  display: block;
+  margin-top: 12px;
+}

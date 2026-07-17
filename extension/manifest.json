@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "AI Usage Bridge",
+  "version": "0.5.3",
+  "description": "Reads Claude and Cursor account limits through the signed-in browser session. Antigravity, Codex and Copilot are read locally by the widget.",
+  "permissions": ["storage", "alarms"],
+  "host_permissions": [
+    "https://claude.ai/api/organizations",
+    "https://claude.ai/api/organizations/*/usage",
+    "https://cursor.com/api/usage-summary",
+    "http://127.0.0.1:32145/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "AI Usage Bridge",
+    "default_popup": "popup.html"
+  }
+}

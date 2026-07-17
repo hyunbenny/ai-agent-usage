@@ -1,0 +1,23 @@
+# 크로스플랫폼(Windows/macOS) 편집 시 줄바꿈이 깨지지 않도록 파일 종류별로 강제한다.
+root = true
+
+[*]
+charset = utf-8
+insert_final_newline = true
+
+# Windows 배치: cmd.exe가 LF를 오파싱하므로 CRLF + 단일바이트(ASCII) 고정
+[*.{cmd,bat}]
+end_of_line = crlf
+charset = latin1
+
+# PowerShell: CRLF 권장
+[*.ps1]
+end_of_line = crlf
+
+# 셸 스크립트: bash가 CRLF의 shebang/구문에서 실패하므로 LF 고정
+[*.sh]
+end_of_line = lf
+
+# Java: LF로 통일 (컴파일은 무관하나 diff 일관성)
+[*.java]
+end_of_line = lf

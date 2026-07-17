@@ -1,0 +1,21 @@
+# 빌드 산출물
+build/
+dist/
+
+# 정리용 임시 폴더
+_to_delete/
+
+# 컴파일 결과물
+*.class
+*.jar
+
+# IDE 설정
+.idea/
+*.iml
+.vscode/
+out/
+
+# OS 잡동사니
+Thumbs.db
+Desktop.ini
+.DS_Store

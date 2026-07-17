@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>AI Usage Bridge</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <h1>AI Usage Bridge</h1>
+  <section><strong>Claude</strong><p id="claude-status">상태 확인 중…</p><p id="claude-usage" class="muted"></p></section>
+  <section><strong>Cursor</strong><p id="cursor-status">상태 확인 중…</p><p id="cursor-usage" class="muted"></p></section>
+  <button id="refresh">지금 갱신</button>
+  <small>자동 갱신 주기는 5분입니다. Antigravity·Codex·Copilot은 위젯이 앱의 로컬 데이터를 직접 읽습니다.</small>
+  <script src="popup.js"></script>
+</body>
+</html>

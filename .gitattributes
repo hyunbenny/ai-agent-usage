@@ -1,0 +1,17 @@
+# git 사용 시 체크아웃 줄바꿈을 파일 종류별로 강제한다. (지금 repo가 아니어도 향후 대비)
+* text=auto
+
+*.cmd  text eol=crlf
+*.bat  text eol=crlf
+*.ps1  text eol=crlf
+
+*.sh   text eol=lf
+*.java text eol=lf
+
+# 바이너리 (줄바꿈 변환 금지)
+*.png  binary
+*.ico  binary
+*.icns binary
+*.jar  binary
+*.zip  binary
+*.exe  binary
