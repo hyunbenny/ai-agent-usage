@@ -1,0 +1,107 @@
+# v로 시작하는 태그(예: v1.4.0)를 푸시하면 Windows EXE와 macOS DMG(Apple Silicon·Intel)를
+# 빌드해 드래프트 릴리즈에 첨부한다. 릴리즈 노트를 붙여 넣고 Publish 하면 된다.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch: # Actions 탭에서 수동 실행 (빌드 검증용, 릴리즈는 태그에서만 생성)
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    name: Windows 포터블 EXE
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      # 태그 버전과 package-exe.ps1의 $AppVersion이 어긋난 채 릴리즈되는 것을 방지한다.
+      - name: 태그-스크립트 버전 일치 확인
+        if: github.ref_type == 'tag'
+        shell: powershell
+        run: |
+          $v = (Select-String -Path package-exe.ps1 -Pattern '\$AppVersion = "([^"]+)"').Matches[0].Groups[1].Value
+          $tag = "${{ github.ref_name }}".TrimStart("v")
+          if ($v -ne $tag) { throw "버전 불일치: 태그=$tag, package-exe.ps1=$v — 스크립트 버전을 맞춘 뒤 태그를 다시 만드세요." }
+
+      - name: 포터블 EXE 빌드 (컴파일·테스트·jpackage·IExpress)
+        shell: powershell
+        run: .\package-exe.ps1
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-exe
+          path: dist/AIUsageWidget-portable.exe
+          if-no-files-found: error
+
+  build-macos:
+    name: macOS DMG (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-latest # Apple Silicon (arm64)
+            arch: arm64
+          - runner: macos-15-intel # Intel (x86_64) — GitHub Actions에서 2027년 8월까지 지원
+            arch: intel
+    env:
+      JAVA_TOOL_OPTIONS: -Djava.awt.headless=true # CI에는 GUI가 없으므로 테스트를 헤드리스로 실행
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: 태그-스크립트 버전 일치 확인
+        if: github.ref_type == 'tag'
+        run: |
+          v=$(grep -o 'APP_VERSION="[^"]*"' package-dmg.sh | cut -d'"' -f2)
+          tag="${GITHUB_REF_NAME#v}"
+          if [ "$v" != "$tag" ]; then
+            echo "버전 불일치: 태그=$tag, package-dmg.sh=$v — 스크립트 버전을 맞춘 뒤 태그를 다시 만드세요."
+            exit 1
+          fi
+
+      - name: DMG 빌드 (컴파일·테스트·jpackage)
+        run: bash package-dmg.sh
+
+      # 두 아키텍처의 DMG 파일명이 같으면 릴리즈에서 충돌하므로 접미사를 붙인다.
+      - name: 아키텍처 접미사 추가
+        run: |
+          f=$(ls dist/AIUsageWidget-*.dmg)
+          mv "$f" "${f%.dmg}-${{ matrix.arch }}.dmg"
+          ls dist/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos-dmg-${{ matrix.arch }}
+          path: dist/*.dmg
+          if-no-files-found: error
+
+  release:
+    name: 드래프트 릴리즈 생성
+    if: github.ref_type == 'tag'
+    needs: [build-windows, build-macos]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      # 드래프트로 만들어 두므로, 릴리즈 노트를 붙여 넣고 직접 Publish 한다.
+      - uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          name: AI Usage Widget ${{ github.ref_name }}
+          files: artifacts/*

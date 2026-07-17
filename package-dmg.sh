@@ -10,7 +10,7 @@ if [ "$(uname)" != "Darwin" ]; then
   exit 1
 fi
 
-APP_VERSION="1.3.0"
+APP_VERSION="1.4.0"
 
 # 1. 컴파일 + 테스트
 bash build.sh

@@ -23,7 +23,7 @@ if (-not (Test-Path -LiteralPath $OutputsDir)) {
     New-Item -ItemType Directory -Path $OutputsDir | Out-Null
 }
 $OutputExe = Join-Path $OutputsDir "AIUsageWidget-portable.exe"
-$AppVersion = "1.3.3"
+$AppVersion = "1.4.0"
 
 foreach ($path in @($PackageInput, $PackageOutput, $SfxStage)) {
     if (Test-Path -LiteralPath $path) {
